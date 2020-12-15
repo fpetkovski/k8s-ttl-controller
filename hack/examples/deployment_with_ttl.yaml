@@ -15,7 +15,6 @@ kind: Deployment
 metadata:
   annotations:
     ttl: "10s"
-    a: c
   labels:
     app: nginx
   name: nginx
