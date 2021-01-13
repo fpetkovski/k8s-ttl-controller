@@ -1,15 +1,4 @@
 ---
-apiVersion: fpetkovski.io/v1alpha1
-kind: TTLController
-metadata:
-  name: deployment-ttl-controller
-spec:
-  resource:
-    apiVersion: batch/v1
-    kind: Job
-  ttlValueField: .metadata.annotations.ttl
-  expirationValueField: .status.completionTime
----
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
@@ -32,3 +21,14 @@ spec:
             - image: busybox
               name: busybox
           restartPolicy: Never
+---
+apiVersion: fpetkovski.io/v1alpha1
+kind: TTLController
+metadata:
+  name: deployment-ttl-controller
+spec:
+  resource:
+    apiVersion: batch/v1
+    kind: Job
+  ttlValueField: .metadata.annotations.ttl
+  expirationValueField: .status.completionTime

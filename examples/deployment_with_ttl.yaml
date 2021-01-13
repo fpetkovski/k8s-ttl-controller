@@ -1,15 +1,4 @@
 ---
-apiVersion: fpetkovski.io/v1alpha1
-kind: TTLController
-metadata:
-  name: deployment-ttl-controller
-spec:
-  resource:
-    apiVersion: apps/v1
-    kind: deployment
-  ttlValueField: .metadata.annotations.ttl
-  expirationValueField: .status.conditions[0].lastUpdateTime
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -31,3 +20,14 @@ spec:
       containers:
         - image: nginx
           name: nginx
+---
+apiVersion: fpetkovski.io/v1alpha1
+kind: TTLController
+metadata:
+  name: deployment-ttl-controller
+spec:
+  resource:
+    apiVersion: apps/v1
+    kind: Deployment
+  ttlValueField: .metadata.annotations.ttl
+  expirationValueField: .status.conditions[0].lastUpdateTime
