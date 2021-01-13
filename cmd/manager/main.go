@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fpetkovski/k8s-ttl-operator/apis/fpetkovski_io/v1alpha1"
+	"fpetkovski/k8s-ttl-operator/pkg/apis/fpetkovski_io/v1alpha1"
 	"fpetkovski/k8s-ttl-operator/pkg/ttl_controller"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
 	"os"
