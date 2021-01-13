@@ -9,6 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: docker build -f build/Dockerfile . -t fpetkovski/ttl-controller:$GITHUB_SHA
+      - run: docker build -f build/Dockerfile . -t fpetkovski/ttl-controller:$GITHUB_REF
       - run: docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password ${{ secrets.DOCKERHUB_PASSWORD }}
-      - run: docker push fpetkovski/ttl-controller:$GITHUB_SHA
+      - run: docker push fpetkovski/ttl-controller:$GITHUB_REF
