@@ -8,7 +8,14 @@ jobs:
     name: Build artifact
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - run: docker build -f build/Dockerfile . -t fpetkovski/ttl-controller:$GITHUB_REF
-      - run: docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password ${{ secrets.DOCKERHUB_PASSWORD }}
-      - run: docker push fpetkovski/ttl-controller:$GITHUB_REF
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Build and push Docker images
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        repository: fpetkovski/ttl-controller
+        tag_with_ref: true
+        dockerfile: build/Dockerfile
