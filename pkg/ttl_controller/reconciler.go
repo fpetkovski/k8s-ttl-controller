@@ -67,7 +67,7 @@ func (r *reconciler) Reconcile(request reconcile.Request) (reconcile.Result, err
 				fmt.Sprintf("Expiration value is not a valid time: %s", err.Error()),
 				"Kind", resource.GetKind(),
 				"Name", resource.GetName(),
-				"ExpirationValueField", *r.expirationValueField)
+				"ExpirationFrom", *r.expirationValueField)
 			return reconcile.Result{}, nil
 		} else {
 			expirationTime = t

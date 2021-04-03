@@ -23,19 +23,19 @@ import (
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +kubebuilder:subresource:status
-// +kubebuilder:resource:path=ttlcontrollers,scope=Cluster,shortName=ttlctl
-type TTLController struct {
+// +kubebuilder:resource:path=ttlpolicies,scope=Cluster,shortName=ttlp
+type TTLPolicy struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata"`
 
-	Spec   TTlControllerSpec   `json:"spec"`
-	Status TTLControllerStatus `json:"status,omitempty"`
+	Spec   TTLPolicySpec   `json:"spec"`
+	Status TTLPolicyStatus `json:"status,omitempty"`
 }
 
-type TTlControllerSpec struct {
-	Resource             ResourceRule `json:"resource"`
-	TTLValueField        string       `json:"ttlValueField"`
-	ExpirationValueField *string      `json:"expirationValueField,omitempty"`
+type TTLPolicySpec struct {
+	Resource       ResourceRule `json:"resource"`
+	TTLFrom        string       `json:"ttlFrom"`
+	ExpirationFrom *string      `json:"expirationFrom,omitempty"`
 }
 
 type ResourceRule struct {
@@ -43,13 +43,13 @@ type ResourceRule struct {
 	Kind       string `json:"kind"`
 }
 
-type TTLControllerStatus struct {
+type TTLPolicyStatus struct {
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-type TTLControllerList struct {
+type TTLPolicyList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata"`
-	Items           []TTLController `json:"items"`
+	Items           []TTLPolicy `json:"items"`
 }

@@ -44,7 +44,7 @@ func main() {
 	}
 
 	// Watch ReplicaSets and enqueue ReplicaSet object key
-	watchSource := &source.Kind{Type: &v1alpha1.TTLController{}}
+	watchSource := &source.Kind{Type: &v1alpha1.TTLPolicy{}}
 	if err := c.Watch(watchSource, &handler.EnqueueRequestForObject{}); err != nil {
 		logger.Error(err, "unable to watch composite controllers")
 		os.Exit(1)

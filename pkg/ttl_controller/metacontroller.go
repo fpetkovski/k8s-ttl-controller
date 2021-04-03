@@ -41,7 +41,7 @@ func NewMetacontroller(mgr controllerruntime.Manager) *metacontroller {
 var _ reconcile.Reconciler = &metacontroller{}
 
 func (mc *metacontroller) Reconcile(request reconcile.Request) (reconcile.Result, error) {
-	cc := &v1alpha1.TTLController{}
+	cc := &v1alpha1.TTLPolicy{}
 	if err := mc.client.Get(context.TODO(), request.NamespacedName, cc); errors.IsNotFound(err) {
 		return reconcile.Result{}, nil
 	} else if err != nil {
@@ -64,7 +64,7 @@ func (mc *metacontroller) Reconcile(request reconcile.Request) (reconcile.Result
 	return mc.syncController(parentCtrlName, cc)
 }
 
-func (mc *metacontroller) syncController(ctrlName string, cc *v1alpha1.TTLController) (reconcile.Result, error) {
+func (mc *metacontroller) syncController(ctrlName string, cc *v1alpha1.TTLPolicy) (reconcile.Result, error) {
 	if ctrl, found := mc.parentControllers[ctrlName]; found {
 		mc.logger.Info("TTL controller already exists, recreating", "Name", ctrlName)
 		ctrl.Stop()
@@ -79,7 +79,7 @@ func (mc *metacontroller) syncController(ctrlName string, cc *v1alpha1.TTLContro
 	}
 
 	gvk := groupVersion.WithKind(resourceSpec.Kind)
-	ctrl, err := newTTLController(ctrlName, mc.manager, gvk, cc.Spec.TTLValueField, cc.Spec.ExpirationValueField)
+	ctrl, err := newTTLController(ctrlName, mc.manager, gvk, cc.Spec.TTLFrom, cc.Spec.ExpirationFrom)
 	if err != nil {
 		mc.logger.Error(err, "Could not create new ttl controller")
 		return reconcile.Result{}, nil
@@ -95,7 +95,7 @@ func (mc *metacontroller) syncController(ctrlName string, cc *v1alpha1.TTLContro
 	return reconcile.Result{}, nil
 }
 
-func (mc *metacontroller) deleteController(ctrlName string, cc *v1alpha1.TTLController) (reconcile.Result, error) {
+func (mc *metacontroller) deleteController(ctrlName string, cc *v1alpha1.TTLPolicy) (reconcile.Result, error) {
 	if ctrl, ok := mc.parentControllers[ctrlName]; ok {
 		mc.logger.Info("Deleting composite controller", "Name", ctrlName)
 		ctrl.Stop()

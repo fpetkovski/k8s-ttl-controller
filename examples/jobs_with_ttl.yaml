@@ -30,5 +30,5 @@ spec:
   resource:
     apiVersion: batch/v1
     kind: Job
-  ttlValueField: .metadata.annotations.ttl
-  expirationValueField: .status.completionTime
+  ttlFrom: .metadata.annotations.ttl
+  expirationFrom: .status.completionTime

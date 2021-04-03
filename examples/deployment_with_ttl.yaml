@@ -22,12 +22,12 @@ spec:
           name: nginx
 ---
 apiVersion: fpetkovski.io/v1alpha1
-kind: TTLController
+kind: TTLPolicy
 metadata:
   name: deployment-ttl-controller
 spec:
   resource:
     apiVersion: apps/v1
     kind: Deployment
-  ttlValueField: .metadata.annotations.ttl
-  expirationValueField: .status.conditions[0].lastUpdateTime
+  ttlFrom: .metadata.annotations.ttl
+  expirationFrom: .status.conditions[0].lastUpdateTime
