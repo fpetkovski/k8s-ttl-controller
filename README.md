@@ -8,11 +8,11 @@ The k8s-ttl-operator project is a Kubernetes operator which enables defining Tim
 
 Install the CRD using
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/fpetkovski/k8s-ttl-operator/main/deploy/crds.yaml
+kubectl apply -f https://raw.githubusercontent.com/fpetkovski/k8s-ttl-operator/0.3.0/deploy/crds.yaml
 ```
 and the operator using
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/fpetkovski/k8s-ttl-operator/main/deploy/operator.yaml
+kubectl apply -f https://raw.githubusercontent.com/fpetkovski/k8s-ttl-operator/0.3.0/deploy/operator.yaml
 ```
 
 ## Example usage

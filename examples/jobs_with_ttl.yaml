@@ -11,7 +11,7 @@ spec:
     metadata:
       name: busybox
       annotations:
-        ttl: 5m
+        ttl: 15s
     spec:
       template:
         metadata:
@@ -23,9 +23,9 @@ spec:
           restartPolicy: Never
 ---
 apiVersion: fpetkovski.io/v1alpha1
-kind: TTLController
+kind: TTLPolicy
 metadata:
-  name: deployment-ttl-controller
+  name: jobs-ttl-controller
 spec:
   resource:
     apiVersion: batch/v1

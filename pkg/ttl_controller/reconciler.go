@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/go-logr/logr"
 	"k8s.io/apimachinery/pkg/api/errors"
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -93,7 +94,8 @@ func (r *reconciler) Reconcile(request reconcile.Request) (reconcile.Result, err
 
 func (r *reconciler) delete(resource unstructured.Unstructured) (reconcile.Result, error) {
 	r.logger.Info("Object expired", "Kind", resource.GetKind(), "Name", resource.GetName())
-	err := r.client.Delete(context.TODO(), &resource)
+	backgroundDeletion := client.PropagationPolicy(v1.DeletePropagationBackground)
+	err := r.client.Delete(context.TODO(), &resource, backgroundDeletion)
 	if err != nil {
 		return reconcile.Result{
 			RequeueAfter: 30 * time.Second,

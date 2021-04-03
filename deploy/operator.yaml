@@ -18,6 +18,7 @@ rules:
     - get
     - list
     - watch
+    - update
     - delete
 - apiGroups:
     - fpetkovski.io
@@ -57,7 +58,7 @@ spec:
       serviceAccountName: ttl-operator
       containers:
         - name: ttl-operator
-          image: fpetkovski/ttl-operator:0.2.0
+          image: fpetkovski/ttl-operator:0.3.0
           args:
             - --v=4
           imagePullPolicy: Always
