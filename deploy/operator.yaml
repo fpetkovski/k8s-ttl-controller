@@ -38,3 +38,33 @@ subjects:
   - kind: ServiceAccount
     name: ttl-operator
     namespace: kube-system
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ttl-operator
+  namespace: kube-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: ttl-operator
+  template:
+    metadata:
+      labels:
+        name: ttl-operator
+    spec:
+      serviceAccountName: ttl-operator
+      containers:
+        - name: ttl-operator
+          image: fpetkovski/ttl-operator:0.1.0
+          args:
+            - --v=4
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: "0.5"
+              memory: "128Mi"
+            limits:
+              cpu: "0.5"
+              memory: "128Mi"
