@@ -31,6 +31,8 @@ spec:
   ttlFrom: .metadata.annotations.ttl
 ```
 
+With this configuration, the TTL for jobs will be taken from the `ttl` annotation. A job whose `ttl` annotation is set to `15s` will be deleted 15 seconds after it completes.
+
 Please refer to the [examples](https://github.com/fpetkovski/k8s-ttl-controller/tree/main/examples) folder for more usage patterns.
 
 ## License
