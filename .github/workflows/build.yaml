@@ -16,6 +16,6 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
-        repository: fpetkovski/ttl-operator
+        repository: fpetkovski/ttl-controller
         tag_with_ref: true
         dockerfile: build/Dockerfile

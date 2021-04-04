@@ -1,4 +1,4 @@
-module fpetkovski/k8s-ttl-operator
+module fpetkovski/k8s-ttl-controller
 
 go 1.14
 

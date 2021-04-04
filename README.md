@@ -1,23 +1,23 @@
-# k8s-ttl-operator
+# k8s-ttl-controller
 
-The k8s-ttl-operator project is a Kubernetes operator which enables defining Time to live (TTL) policies for Kubernetes resources. The behavior for a TTL policy is defined using the following user-defined parameters:
-* `expirationFrom` - defines which field of the resource to use as a reference time point. If not defined, it defaults to the resource's creation time
-* `ttlFrom` determines how long the resource should live after it expires
+The k8s-ttl-controller project is a Kubernetes controller which provides time to live (TTL) mechanism for Kubernetes resources. The TTL behavior for each resource is configured through a `TTLPolicy` using the following user-defined parameters:
+* `expirationFrom` - the field of the resource to use as a reference point. Defaults to the resource's creation time if not specified
+* `ttlFrom` the field from the resource to use as the TTL value
 
-## Install
+## Installation
 
-Install the CRD using
+Install the CRD using:
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/fpetkovski/k8s-ttl-operator/0.3.0/deploy/crds.yaml
+kubectl apply -f https://raw.githubusercontent.com/fpetkovski/k8s-ttl-controller/0.3.0/deploy/crds.yaml
 ```
-and the operator using
+and the controller using:
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/fpetkovski/k8s-ttl-operator/0.3.0/deploy/operator.yaml
+kubectl apply -f https://raw.githubusercontent.com/fpetkovski/k8s-ttl-controller/0.3.0/deploy/controller.yaml
 ```
 
 ## Example usage
 
-Expiring completed Kubernetes jobs can be done by creating a `TTLPolicy` with the following configuration
+Expiring Kubernetes jobs in the `Completed` state can be done by creating a `TTLPolicy` with the following configuration:
 ```yaml
 apiVersion: fpetkovski.io/v1alpha1
 kind: TTLPolicy
@@ -31,7 +31,7 @@ spec:
   ttlFrom: .metadata.annotations.ttl
 ```
 
-Please refer to the [examples](https://github.com/fpetkovski/k8s-ttl-operator/tree/main/examples) folder for more usage patterns.
+Please refer to the [examples](https://github.com/fpetkovski/k8s-ttl-controller/tree/main/examples) folder for more usage patterns.
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)

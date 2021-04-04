@@ -2,13 +2,13 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: ttl-operator
+  name: ttl-controller
   namespace: kube-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: ttl-operator
+  name: ttl-controller
 rules:
 - apiGroups:
     - "*"
@@ -23,42 +23,42 @@ rules:
 - apiGroups:
     - fpetkovski.io
   resources:
-    - ttlcontrollers
+    - ttlpolicies
   verbs:
     - update
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: ttl-operator
+  name: ttl-controller
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: ttl-operator
+  name: ttl-controller
 subjects:
   - kind: ServiceAccount
-    name: ttl-operator
+    name: ttl-controller
     namespace: kube-system
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ttl-operator
+  name: ttl-controller
   namespace: kube-system
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: ttl-operator
+      name: ttl-controller
   template:
     metadata:
       labels:
-        name: ttl-operator
+        name: ttl-controller
     spec:
-      serviceAccountName: ttl-operator
+      serviceAccountName: ttl-controller
       containers:
-        - name: ttl-operator
-          image: fpetkovski/ttl-operator:0.3.0
+        - name: ttl-controller
+          image: fpetkovski/ttl-controller:0.4.0
           args:
             - --v=4
           imagePullPolicy: Always
