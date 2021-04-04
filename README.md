@@ -1,7 +1,7 @@
 # k8s-ttl-controller
 
-The k8s-ttl-controller project is a Kubernetes controller which provides time to live (TTL) mechanism for Kubernetes resources. The TTL behavior for each resource is configured through a `TTLPolicy` using the following user-defined parameters:
-* `expirationFrom` - the resource property used as reference point from which expiration is calculated. Defaults to the resource's creation time if not specified
+The k8s-ttl-controller project is a Kubernetes controller which provides a time to live (TTL) mechanism for Kubernetes resources. The TTL behavior for each resource is configured through a `TTLPolicy` using the following user-defined parameters:
+* `expirationFrom` - the resource property used as reference point from which expiration is calculated. If not specified, it defaults to the resource's creation time
 * `ttlFrom` the resource property used as the TTL value
 
 ## Installation
