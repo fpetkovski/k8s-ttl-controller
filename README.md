@@ -1,18 +1,18 @@
 # k8s-ttl-controller
 
 The k8s-ttl-controller project is a Kubernetes controller which provides time to live (TTL) mechanism for Kubernetes resources. The TTL behavior for each resource is configured through a `TTLPolicy` using the following user-defined parameters:
-* `expirationFrom` - the field of the resource to use as a reference point. Defaults to the resource's creation time if not specified
-* `ttlFrom` the field from the resource to use as the TTL value
+* `expirationFrom` - the resource property used as reference point from which expiration is calculated. Defaults to the resource's creation time if not specified
+* `ttlFrom` the resource property used as the TTL value
 
 ## Installation
 
 Install the CRD using:
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/fpetkovski/k8s-ttl-controller/0.3.0/deploy/crds.yaml
+kubectl apply -f https://raw.githubusercontent.com/fpetkovski/k8s-ttl-controller/0.4.0/deploy/crds.yaml
 ```
 and the controller using:
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/fpetkovski/k8s-ttl-controller/0.3.0/deploy/controller.yaml
+kubectl apply -f https://raw.githubusercontent.com/fpetkovski/k8s-ttl-controller/0.4.0/deploy/controller.yaml
 ```
 
 ## Example usage
