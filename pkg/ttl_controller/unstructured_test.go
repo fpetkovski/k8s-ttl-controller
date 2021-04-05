@@ -2,12 +2,13 @@ package ttl_controller
 
 import (
 	"encoding/json"
+	"testing"
+	"time"
+
 	"github.com/stretchr/testify/assert"
 	v1 "k8s.io/api/apps/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
-	"testing"
-	"time"
 )
 
 func TestGetTTLValueFromMetadata(t *testing.T) {

@@ -2,9 +2,10 @@ package ttl_controller
 
 import (
 	"bytes"
+	"time"
+
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/client-go/util/jsonpath"
-	"time"
 )
 
 func GetTTLValue(object unstructured.Unstructured, ttlValueField string) (time.Duration, error) {
