@@ -6,3 +6,8 @@ gen:
 .PHONY: docs
 docs:
 	./hack/docs/gen-crd-api-reference-docs -template-dir hack/docs/templates -config hack/docs/config.json -api-dir "github.com/fpetkovski/k8s-ttl-controller/pkg/apis/" -out-file docs/README.md
+
+.PHONY: fmt
+fmt:
+	goimports -w -l .
+
