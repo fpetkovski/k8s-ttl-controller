@@ -38,6 +38,3 @@ Please refer to the [examples](https://github.com/fpetkovski/k8s-ttl-controller/
 ## API Reference
 
 A detailed API reference can be found on the [API docs](https://github.com/fpetkovski/k8s-ttl-controller/tree/main/docs) page.
-
-## License
-[MIT](https://choosealicense.com/licenses/mit/)
