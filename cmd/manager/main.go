@@ -15,11 +15,9 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/source"
 )
 
-func init() {
-	log.SetLogger(zap.New())
-}
-
 func main() {
+	log.SetLogger(zap.New())
+
 	logger := log.Log.WithName("main")
 
 	// Setup a manager
@@ -36,7 +34,7 @@ func main() {
 
 	// Setup a new controller to reconcile ReplicaSets
 	c, err := controller.New("ttl-metacontroller", mgr, controller.Options{
-		Reconciler: ttl_controller.NewMetacontroller(mgr),
+		Reconciler: ttl_controller.NewMetacontroller(mgr, log.Log),
 	})
 	if err != nil {
 		logger.Error(err, "unable to create a composite controller")

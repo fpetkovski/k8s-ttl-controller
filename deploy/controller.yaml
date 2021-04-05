@@ -58,7 +58,7 @@ spec:
       serviceAccountName: ttl-controller
       containers:
         - name: ttl-controller
-          image: fpetkovski/ttl-controller:0.4.0
+          image: fpetkovski/ttl-controller:0.5.0
           args:
             - --v=4
           imagePullPolicy: Always

@@ -8,11 +8,11 @@ The k8s-ttl-controller project is a Kubernetes controller which provides a time 
 
 Install the CRD using:
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/fpetkovski/k8s-ttl-controller/0.4.0/deploy/crds.yaml
+kubectl apply -f https://raw.githubusercontent.com/fpetkovski/k8s-ttl-controller/0.5.0/deploy/crds.yaml
 ```
 and the controller using:
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/fpetkovski/k8s-ttl-controller/0.4.0/deploy/controller.yaml
+kubectl apply -f https://raw.githubusercontent.com/fpetkovski/k8s-ttl-controller/0.5.0/deploy/controller.yaml
 ```
 
 ## Example usage
