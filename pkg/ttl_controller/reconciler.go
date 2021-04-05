@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/fpetkovski/k8s-ttl-controller/pkg/watch_predicates"
 	"github.com/go-logr/logr"
 	"k8s.io/apimachinery/pkg/api/errors"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -20,6 +21,7 @@ type reconciler struct {
 	gvk                  schema.GroupVersionKind
 	ttlValueField        string
 	expirationValueField *string
+	objectMatcher        watch_predicates.ObjectMatcher
 	logger               logr.Logger
 }
 
@@ -31,6 +33,7 @@ func newReconciler(
 	gvk schema.GroupVersionKind,
 	ttlValueField string,
 	expirationValueField *string,
+	objectMatcher watch_predicates.ObjectMatcher,
 	logger logr.Logger,
 ) *reconciler {
 	return &reconciler{
@@ -38,14 +41,15 @@ func newReconciler(
 		gvk:                  gvk,
 		ttlValueField:        ttlValueField,
 		expirationValueField: expirationValueField,
+		objectMatcher:        objectMatcher,
 		logger:               logger,
 	}
 }
 
 func (r *reconciler) Reconcile(request reconcile.Request) (reconcile.Result, error) {
-	resource := unstructured.Unstructured{}
+	resource := &unstructured.Unstructured{}
 	resource.SetGroupVersionKind(r.gvk)
-	if err := r.client.Get(context.TODO(), request.NamespacedName, &resource); errors.IsNotFound(err) {
+	if err := r.client.Get(context.Background(), request.NamespacedName, resource); errors.IsNotFound(err) {
 		r.logger.V(5).Info(
 			"Could not find object, skipping.",
 			"ApiVersion", r.gvk.GroupVersion(),
@@ -61,11 +65,18 @@ func (r *reconciler) Reconcile(request reconcile.Request) (reconcile.Result, err
 		return reconcile.Result{}, nil
 	}
 
+	if !r.objectMatcher.Matches(resource) {
+		r.logger.Info(
+			"Object does not match TTLPolicy resource rule, skipping deletion",
+			"Name", resource.GetName())
+		return reconcile.Result{}, nil
+	}
+
 	expirationTime := resource.GetCreationTimestamp().Time
 	if r.expirationValueField != nil {
 		t, err := GetExpirationValue(resource, *r.expirationValueField)
 		if err != nil {
-			r.logger.V(5).Info(
+			r.logger.Info(
 				fmt.Sprintf("Expiration value is not a valid time: %s", err.Error()),
 				"Kind", resource.GetKind(),
 				"Name", resource.GetName(),
@@ -78,11 +89,11 @@ func (r *reconciler) Reconcile(request reconcile.Request) (reconcile.Result, err
 
 	ttl, err := GetTTLValue(resource, r.ttlValueField)
 	if err != nil {
-		r.logger.V(5).Info(
-			fmt.Sprintf("Expiration value is not a valid duration: %s", err.Error()),
-			"Error processing object",
+		r.logger.Info(
+			fmt.Sprintf("TTL value is not a valid duration: %s", err.Error()),
 			"Kind", resource.GetKind(),
-			"Name", resource.GetName())
+			"Name", resource.GetName(),
+			"TTLFrom", r.ttlValueField)
 		return reconcile.Result{}, nil
 	}
 
@@ -93,10 +104,10 @@ func (r *reconciler) Reconcile(request reconcile.Request) (reconcile.Result, err
 	}
 }
 
-func (r *reconciler) delete(resource unstructured.Unstructured) (reconcile.Result, error) {
+func (r *reconciler) delete(resource *unstructured.Unstructured) (reconcile.Result, error) {
 	r.logger.Info("Object expired", "Kind", resource.GetKind(), "Name", resource.GetName())
 	backgroundDeletion := client.PropagationPolicy(v1.DeletePropagationBackground)
-	err := r.client.Delete(context.TODO(), &resource, backgroundDeletion)
+	err := r.client.Delete(context.TODO(), resource, backgroundDeletion)
 	if err != nil {
 		return reconcile.Result{
 			RequeueAfter: 30 * time.Second,
@@ -106,7 +117,7 @@ func (r *reconciler) delete(resource unstructured.Unstructured) (reconcile.Resul
 	return reconcile.Result{}, nil
 }
 
-func (r *reconciler) requeue(ttl time.Duration, createdAt time.Time, resource unstructured.Unstructured) (reconcile.Result, error) {
+func (r *reconciler) requeue(ttl time.Duration, createdAt time.Time, resource *unstructured.Unstructured) (reconcile.Result, error) {
 	requeueAfter := createdAt.Add(ttl).Sub(time.Now())
 	message := fmt.Sprintf("Scheduling deletion in %d seconds", int64(requeueAfter.Seconds()))
 	r.logger.Info(message, "Kind", resource.GetKind(), "Name", resource.GetName())

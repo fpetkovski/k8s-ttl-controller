@@ -11,7 +11,7 @@ spec:
     metadata:
       name: busybox
       annotations:
-        ttl: 15s
+        ttl: 1m10s
     spec:
       template:
         metadata:

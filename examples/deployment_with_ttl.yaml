@@ -6,6 +6,7 @@ metadata:
     ttl: "10s"
   labels:
     app: nginx
+    a: b
   name: nginx
 spec:
   replicas: 1
@@ -29,5 +30,8 @@ spec:
   resource:
     apiVersion: apps/v1
     kind: Deployment
+    namespace: default
+    matchLabels:
+      a: b
   ttlFrom: .metadata.annotations.ttl
   expirationFrom: .status.conditions[0].lastUpdateTime

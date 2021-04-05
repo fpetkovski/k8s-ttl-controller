@@ -8,7 +8,7 @@ import (
 	"k8s.io/client-go/util/jsonpath"
 )
 
-func GetTTLValue(object unstructured.Unstructured, ttlValueField string) (time.Duration, error) {
+func GetTTLValue(object *unstructured.Unstructured, ttlValueField string) (time.Duration, error) {
 	buf, err := getValue(object, ttlValueField)
 	if err != nil {
 		return 0, err
@@ -21,7 +21,7 @@ func GetTTLValue(object unstructured.Unstructured, ttlValueField string) (time.D
 	}
 }
 
-func GetExpirationValue(object unstructured.Unstructured, expirationValueField string) (time.Time, error) {
+func GetExpirationValue(object *unstructured.Unstructured, expirationValueField string) (time.Time, error) {
 	buf, err := getValue(object, expirationValueField)
 	if err != nil {
 		return time.Time{}, err
@@ -38,7 +38,7 @@ func IsExpired(ttl time.Duration, createdAt time.Time) bool {
 	return createdAt.Add(ttl).Before(time.Now())
 }
 
-func getValue(object unstructured.Unstructured, field string) (*bytes.Buffer, error) {
+func getValue(object *unstructured.Unstructured, field string) (*bytes.Buffer, error) {
 	jp := jsonpath.New("ttl").AllowMissingKeys(true)
 	if err := jp.Parse(`{` + field + `}`); err != nil {
 		return nil, err

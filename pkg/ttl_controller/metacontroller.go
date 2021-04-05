@@ -7,7 +7,6 @@ import (
 	"github.com/fpetkovski/k8s-ttl-controller/pkg/apis/fpetkovski_io/v1alpha1"
 	"github.com/go-logr/logr"
 	"k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/apimachinery/pkg/runtime/schema"
 	controllerruntime "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
@@ -64,22 +63,14 @@ func (mc *metacontroller) Reconcile(request reconcile.Request) (reconcile.Result
 	return mc.syncController(parentCtrlName, cc)
 }
 
-func (mc *metacontroller) syncController(ctrlName string, cc *v1alpha1.TTLPolicy) (reconcile.Result, error) {
+func (mc *metacontroller) syncController(ctrlName string, ttlPolicy *v1alpha1.TTLPolicy) (reconcile.Result, error) {
 	if ctrl, found := mc.parentControllers[ctrlName]; found {
 		mc.logger.Info("TTL controller already exists, stopping", "Name", ctrlName)
 		ctrl.Stop()
 		delete(mc.parentControllers, ctrlName)
 	}
 
-	resourceSpec := cc.Spec.Resource
-	groupVersion, err := schema.ParseGroupVersion(resourceSpec.APIVersion)
-	if err != nil {
-		mc.logger.Error(err, "Could not create new ttl controller")
-		return reconcile.Result{}, nil
-	}
-
-	gvk := groupVersion.WithKind(resourceSpec.Kind)
-	ctrl, err := newTTLController(ctrlName, mc.manager, gvk, cc.Spec.TTLFrom, cc.Spec.ExpirationFrom)
+	ctrl, err := newTTLController(ctrlName, mc.manager, ttlPolicy.Spec)
 	if err != nil {
 		mc.logger.Error(err, "Could not create new ttl controller")
 		return reconcile.Result{}, nil
