@@ -1,7 +1,7 @@
 package ttl_controller
 
 import (
-	"fpetkovski/k8s-ttl-controller/pkg/signals"
+	"github.com/fpetkovski/k8s-ttl-controller/pkg/signals"
 	"github.com/go-logr/logr"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"

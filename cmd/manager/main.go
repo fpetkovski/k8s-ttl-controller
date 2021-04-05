@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fpetkovski/k8s-ttl-controller/pkg/apis/fpetkovski_io/v1alpha1"
-	"fpetkovski/k8s-ttl-controller/pkg/ttl_controller"
+	"github.com/fpetkovski/k8s-ttl-controller/pkg/apis/fpetkovski_io/v1alpha1"
+	"github.com/fpetkovski/k8s-ttl-controller/pkg/ttl_controller"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
 	"os"
 	"sigs.k8s.io/controller-runtime/pkg/client/config"

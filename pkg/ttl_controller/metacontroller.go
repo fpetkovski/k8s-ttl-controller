@@ -3,7 +3,7 @@ package ttl_controller
 import (
 	"context"
 	"fmt"
-	"fpetkovski/k8s-ttl-controller/pkg/apis/fpetkovski_io/v1alpha1"
+	"github.com/fpetkovski/k8s-ttl-controller/pkg/apis/fpetkovski_io/v1alpha1"
 	"github.com/go-logr/logr"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime/schema"
