@@ -23,23 +23,51 @@ import (
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +kubebuilder:subresource:status
 // +kubebuilder:resource:path=ttlpolicies,scope=Cluster,shortName=ttlp
+// TTLPolicy is the object through which time to live behavior is configured for a Kubernetes resource.
 type TTLPolicy struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata"`
 
-	Spec   TTLPolicySpec   `json:"spec"`
+	// TTLPolicySpec is the spec of the TTLPolicy
+	Spec TTLPolicySpec `json:"spec"`
+	// TTLPolicySpec is the status of the TTLPolicy
 	Status TTLPolicyStatus `json:"status,omitempty"`
 }
 
 type TTLPolicySpec struct {
-	Resource       ResourceRule `json:"resource"`
-	TTLFrom        string       `json:"ttlFrom"`
-	ExpirationFrom *string      `json:"expirationFrom,omitempty"`
+	// ResourceRule defines the resources to which the TTLPolicy should be applied
+	ResourceRule ResourceRule `json:"resource"`
+	// TTLFrom is the resources' property which contains the TTL value for the specific resource. <br/>
+	// Examples: <br />
+	// - 15s <br />
+	// - 1m <br />
+	// - 1h30m <br />
+	TTLFrom string `json:"ttlFrom"`
+	// ExpirationFrom is the resources' property which contains the time from which TTL is calculated.
+	// Examples include `.metadata.creationTimestamp` or `.status.startTime`.
+	// The time should be specified in in `RFC3339` format.
+	// +optional
+	ExpirationFrom *string `json:"expirationFrom,omitempty"`
 }
 
+// ResourceRule defines the resources to which the TTLPolicy should be applied
 type ResourceRule struct {
+	// APIVersion is the full API version of the kubernetes resources. <br />
+	// Examples: <br />
+	// - v1 <br />
+	// - apps/v1 <br />
 	APIVersion string `json:"apiVersion"`
-	Kind       string `json:"kind"`
+	// Kind is the resources' Kind.
+	// Examples: <br />
+	// - Deployment <br />
+	// - Ingress <br />
+	Kind string `json:"kind"`
+	// Namespace is the namespace in which the resources are created
+	// +optional
+	Namespace *string `json:"namespace,omitempty"`
+	// MatchLabels is the label set which the resources should match
+	// +optional
+	MatchLabels map[string]string `json:"matchLabels,omitempty"`
 }
 
 type TTLPolicyStatus struct {

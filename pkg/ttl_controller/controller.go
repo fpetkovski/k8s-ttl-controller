@@ -1,7 +1,10 @@
 package ttl_controller
 
 import (
+	"github.com/fpetkovski/k8s-ttl-controller/pkg/apis/fpetkovski_io/v1alpha1"
 	"github.com/fpetkovski/k8s-ttl-controller/pkg/signals"
+	"github.com/fpetkovski/k8s-ttl-controller/pkg/watch_predicates"
+
 	"github.com/go-logr/logr"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -22,13 +25,29 @@ type ttlController struct {
 func newTTLController(
 	name string,
 	mgr controllerruntime.Manager,
-	gvk schema.GroupVersionKind,
-	ttlValueField string,
-	expirationValueField *string,
+	ttlPolicy v1alpha1.TTLPolicySpec,
 ) (*ttlController, error) {
 	logger := log.Log.WithName(name)
+	groupVersion, err := schema.ParseGroupVersion(ttlPolicy.ResourceRule.APIVersion)
+	if err != nil {
+		return nil, err
+	}
+
+	gvk := groupVersion.WithKind(ttlPolicy.ResourceRule.Kind)
+	objectMatcher := watch_predicates.And(
+		watch_predicates.NamespacePredicate(ttlPolicy.ResourceRule.Namespace),
+		watch_predicates.MatchLabelsPredicate(ttlPolicy.ResourceRule.MatchLabels),
+	)
+	r := newReconciler(
+		mgr.GetClient(),
+		gvk,
+		ttlPolicy.TTLFrom,
+		ttlPolicy.ExpirationFrom,
+		objectMatcher,
+		logger,
+	)
 	ctrl, err := controller.NewUnmanaged(name, mgr, controller.Options{
-		Reconciler: newReconciler(mgr.GetClient(), gvk, ttlValueField, expirationValueField, logger),
+		Reconciler: r,
 	})
 	if err != nil {
 		return nil, err
@@ -39,6 +58,7 @@ func newTTLController(
 	if err := ctrl.Watch(
 		&source.Kind{Type: u},
 		&handler.EnqueueRequestForObject{},
+		objectMatcher,
 	); err != nil {
 		return nil, err
 	}
