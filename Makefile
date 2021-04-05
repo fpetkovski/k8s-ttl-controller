@@ -6,7 +6,7 @@ gen:
 .PHONY: docs
 docs:
 	go mod vendor
-	./hack/docs/gen-crd-api-reference-docs -template-dir hack/docs/templates -config hack/docs/config.json -api-dir "github.com/fpetkovski/k8s-ttl-controller/pkg/apis/" -out-file docs/README.md
+	./scripts/docs/gen-crd-api-reference-docs -template-dir scripts/docs/templates -config scripts/docs/config.json -api-dir "github.com/fpetkovski/k8s-ttl-controller/pkg/apis/" -out-file docs/README.md
 	rm -rf vendor
 
 .PHONY: fmt
