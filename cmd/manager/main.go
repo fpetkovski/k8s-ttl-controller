@@ -1,8 +1,9 @@
 package main
 
 import (
-	"k8s.io/klog/v2/klogr"
 	"os"
+
+	"k8s.io/klog/v2/klogr"
 	controllerruntime "sigs.k8s.io/controller-runtime"
 
 	"github.com/fpetkovski/k8s-ttl-controller/pkg/apis/fpetkovski_io/v1alpha1"

@@ -2,6 +2,11 @@ package ttl_controller_test
 
 import (
 	"context"
+	"log"
+	"os"
+	"testing"
+	"time"
+
 	"github.com/fpetkovski/k8s-ttl-controller/pkg/apis/fpetkovski_io/v1alpha1"
 	"github.com/fpetkovski/k8s-ttl-controller/pkg/ttl_controller"
 	"github.com/stretchr/testify/assert"
@@ -20,11 +25,11 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/handler"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 	"sigs.k8s.io/controller-runtime/pkg/source"
-	"testing"
-	"time"
 )
 
 func TestController(t *testing.T) {
+	setupEnv()
+
 	env := envtest.Environment{
 		CRDInstallOptions: envtest.CRDInstallOptions{
 			Paths: []string{"../../deploy"},
@@ -95,6 +100,15 @@ func TestController(t *testing.T) {
 		err := k8s.Get(context.TODO(), key, &pod)
 		return errors.IsNotFound(err)
 	}, 20*time.Second, time.Second)
+}
+
+func setupEnv() {
+	if err := os.Setenv("TEST_ASSET_KUBE_APISERVER", "../../test/bin/kube-apiserver"); err != nil {
+		log.Fatal(err.Error())
+	}
+	if err := os.Setenv("TEST_ASSET_ETCD", "../../test/bin/etcd"); err != nil {
+		log.Fatal(err.Error())
+	}
 }
 
 func setupManager(t *testing.T, cfg *rest.Config) manager.Manager {

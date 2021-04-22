@@ -4,9 +4,22 @@ name: Build
 on: push
 
 jobs:
-  build:
-    name: Build artifact
+  test:
+    name: Unit tests
     runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Get test dependencies
+        run: make testdeps
+      - name: Run tests
+        run: go test ./...
+
+  build:
+    name: Publis docker image
+    runs-on: ubuntu-latest
+    needs:
+      - test
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
