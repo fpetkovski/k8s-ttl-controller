@@ -16,7 +16,7 @@ jobs:
         run: go test ./...
 
   build:
-    name: Publis docker image
+    name: Publish docker image
     runs-on: ubuntu-latest
     needs:
       - test
