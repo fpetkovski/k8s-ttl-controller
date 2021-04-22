@@ -22,7 +22,7 @@ func TestGetTTLValueFromMetadata(t *testing.T) {
 	object := unstructured.Unstructured{}
 	object.SetUnstructuredContent(content)
 
-	ttl, err := GetTTLValue(object, `.metadata.annotations.ttl`)
+	ttl, err := GetTTLValue(&object, `.metadata.annotations.ttl`)
 	assert.NoError(t, err)
 	assert.Equal(t, 30*time.Second, ttl)
 }
@@ -50,7 +50,7 @@ func TestGetExpirationValueFromCondition(t *testing.T) {
 	object := unstructured.Unstructured{}
 	_ = object.UnmarshalJSON(jsonContent)
 
-	expirationValue, err := GetExpirationValue(object, ".status.conditions[0].lastUpdateTime")
+	expirationValue, err := GetExpirationValue(&object, ".status.conditions[0].lastUpdateTime")
 	assert.NoError(t, err)
 	assert.True(t, lastUpdateTime.Equal(expirationValue))
 }
